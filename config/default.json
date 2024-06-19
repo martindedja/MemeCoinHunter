@@ -1,0 +1,12 @@
+{
+    "app": {
+      "port": 3000,
+      "name": "MemeCoinHunter"
+    },
+    "database": {
+      "host": "localhost",
+      "user": "root",
+      "password": "",
+      "database": "memecoin_db"
+    }
+  }

@@ -1,0 +1,12 @@
+{
+    "solana": {
+      "rpcUrl": "https://helius.rpc_url_here.com",
+      "wallet": {
+        "publicityKey": "YourProdPublicKey",
+        "privateKey": "YourProdPrivateKey"
+      }
+    },
+    "database": {
+      "host": "prod_database_host"
+    }
+  }
