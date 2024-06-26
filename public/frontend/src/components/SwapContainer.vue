@@ -13,7 +13,7 @@
         <img src="../../public/images/solana-logo.svg" alt="" />
         SOL</span
       >
-      <div>
+      <div class="amount-container">
         <input
           id="solAmount"
           v-model="solAmount"
@@ -24,7 +24,7 @@
         <div class="usd-display">≈ ${{ usdAmount.toFixed(2) }} USD</div>
       </div>
       <div class="max-info" @click="applyMax">
-        <div class="max-sol">{{ maxSol }} SOL</div>
+        <div class="max-sol">Max. {{ maxSol }} SOL</div>
         <div class="max-usd">≈ ${{ maxUsd.toFixed(2) }} USD</div>
       </div>
     </div>
@@ -48,16 +48,21 @@ export default {
   computed: {
     solAmount: {
       get() {
-        return this.rawSolAmount.toFixed(2);
+        return Number(this.rawSolAmount).toFixed(2);
       },
       set(value) {
-        this.rawSolAmount = parseFloat(value) || 0;
+        const parsed = parseFloat(value);
+        this.rawSolAmount = isNaN(parsed) ? 0 : parsed;
       },
     },
   },
   methods: {
     convertToUSD() {
-      this.usdAmount = this.rawSolAmount * this.solToUsdRate;
+      if (isNaN(this.rawSolAmount)) {
+        this.usdAmount = 0;
+      } else {
+        this.usdAmount = this.rawSolAmount * this.solToUsdRate;
+      }
     },
     applyMax() {
       this.rawSolAmount = this.maxSol;
@@ -67,6 +72,10 @@ export default {
       console.log(
         `Buying ${this.rawSolAmount} SOL at contract ${this.contractAddress}`
       );
+      this.$emit("buy-solana", {
+        amount: this.rawSolAmount,
+        contract: this.contractAddress,
+      });
       // API integration here
     },
   },
@@ -96,9 +105,10 @@ export default {
   display: flex;
   justify-content: space-around;
 }
-
-#solAmount {
+.amount-container {
   width: 50%;
+}
+#solAmount {
   background: transparent;
   border: none;
   color: white;
