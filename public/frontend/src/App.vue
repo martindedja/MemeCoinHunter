@@ -1,6 +1,28 @@
 <template>
   <div id="app">
     <ThreeScene />
+    <header class="app-header">
+      <div class="menu-container">
+        <img class="icon" src="../public/images/empty-wallet.svg" alt="" />
+        <div>
+          <div class="header-title">
+            <div>
+              <img
+                class="solana-icon"
+                src="../public/images/solana-logo.svg"
+                alt=""
+              />
+            </div>
+            <span class="js-generated-balance">0</span>
+          </div>
+          <div class="header-subtitle">SOL</div>
+        </div>
+        <!-- <div class="menu-item">User Address: {{ userAddress }}</div>
+        <button class="menu-button" @click="connectMetamask">
+          Connect to Metamask
+        </button> -->
+      </div>
+    </header>
     <div id="content">
       <h1>Welcome to Solana Snipe Bot</h1>
       <div class="input-container">
@@ -36,7 +58,7 @@ export default {
   components: {
     ThreeScene,
     TransactionsTable,
-    SwapContainer
+    SwapContainer,
   },
   methods: {
     async convertToUSD() {
@@ -81,6 +103,75 @@ export default {
 <style>
 #app {
   top: 0;
+}
+
+.app-header {
+  color: #fff;
+  padding: 10px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10rem;
+}
+
+.menu-item {
+  margin-right: 20px;
+  font-weight: bold;
+}
+
+.menu-button {
+  padding: 8px 16px;
+  background-color: #666;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.menu-button:hover {
+  background-color: #555;
+}
+
+.icon {
+  width: 25px;
+  height: 25px;
+  filter: invert(1);
+  margin-right: 6px;
+}
+
+.solana-icon {
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  margin-right: 4px;
+}
+
+.header-title {
+  display: flex;
+}
+
+.js-generated-balance {
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  color: #f2f5f9;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: #8d93b7;
 }
 
 #content {

@@ -13,7 +13,7 @@ describe("SolanaSwap.vue", () => {
           usdAmount: 0.0,
           maxSol: 100,
           maxUsd: 1000,
-          solToUsdRate: 10.09,
+          solToUsdRate: 10.00,
         };
       },
     });
@@ -23,14 +23,14 @@ describe("SolanaSwap.vue", () => {
     wrapper.setData({ rawSolAmount: 10 });
     wrapper.vm.convertToUSD();
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.usdAmount).toBeCloseTo(100.9, 2);
+    expect(wrapper.vm.usdAmount).toBeCloseTo(100.0, 2);
   });
 
   it("applies maximum SOL and USD correctly", async () => {
     wrapper.vm.applyMax();
     await wrapper.vm.$nextTick();
     expect(parseFloat(wrapper.vm.solAmount)).toBeCloseTo(wrapper.vm.maxSol, 2);
-    expect(wrapper.vm.usdAmount).toBeCloseTo(1009, 2);
+    expect(wrapper.vm.usdAmount).toBeCloseTo(1000, 2);
   });
 
   it("handles invalid SOL amount input correctly", async () => {
@@ -51,7 +51,7 @@ describe("SolanaSwap.vue", () => {
     wrapper.setData({ rawSolAmount: 1000000 });
     wrapper.vm.convertToUSD();
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.usdAmount).toBeCloseTo(10090000, 2);
+    expect(wrapper.vm.usdAmount).toBeCloseTo(10000000, 2);
   });
 
   it("updates contract address correctly", async () => {
@@ -71,7 +71,7 @@ describe("SolanaSwap.vue", () => {
     await wrapper.vm.$nextTick();
     wrapper.vm.convertToUSD();
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.usdAmount).toBeCloseTo(50.45, 2);
+    expect(wrapper.vm.usdAmount).toBeCloseTo(50.00, 2);
   });
 
   it("emits an event when SOL is bought", async () => {

@@ -1,4 +1,4 @@
-# frontend
+# Solana Snipe Bot
 
 ## Project setup
 ```
