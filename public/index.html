@@ -40,7 +40,6 @@
         try {
           const response = await fetch("/get-usd-rate");
           const data = await response.json();
-          console.log("Rate:", data);
           const rate = data.rate;
           document.getElementById("amountUSD").value = (
             amountSol * rate
@@ -61,7 +60,6 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log("Buy operation:", data);
             updateInvestmentTable();
           })
           .catch((error) => console.error("Error buying coin:", error));
@@ -273,7 +271,6 @@
       }
 
       document.getElementById("buyCoin").addEventListener("click", function () {
-        console.log("Buy coin clicked");
         onBuyCoinClicked();
       });
 

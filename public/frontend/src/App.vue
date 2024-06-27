@@ -46,7 +46,6 @@ import SwapContainer from "./components/SwapContainer.vue";
 export default {
   name: "App",
   data() {
-    console.log(process.env.VUE_APP_API_URL);
     return {
       apiUrl: process.env.VUE_APP_API_URL,
       contractAddress: "",
@@ -103,6 +102,14 @@ export default {
 <style>
 #app {
   top: 0;
+}
+
+html body {
+  font-family: "Roboto", sans-serif;
+  background-color: #121212;
+  color: white;
+  margin: 0;
+  padding: 20px;
 }
 
 .app-header {

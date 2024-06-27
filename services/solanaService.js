@@ -7,7 +7,6 @@ sdk.auth(config.get("sdk.apiKey"));
 const getSolToUsdRate = async () => {
   try {
     const response = await sdk.getCoinById({ coinId: "solana" });
-    console.log("SOL to USD rate:", response.data.price);
     return response.data.price;
   } catch (err) {
     console.error("Error fetching SOL to USD rate:", err);

@@ -20,7 +20,7 @@
           placeholder="Enter Contract Address"
         />
       </div>
-      <div class="sol-input">
+      <div class="sol-input mb-3">
         <span class="label-sol">
           <img src="../../public/images/solana-logo.svg" alt="" />
           SOL</span
@@ -40,38 +40,68 @@
           <div class="max-usd">≈ ${{ maxUsd.toFixed(2) }} USD</div>
         </div>
       </div>
-      <button @click="buySolana">Buy Coin</button>
+      <button class="action-button" @click="buySolana">Buy Coin</button>
     </div>
     <div v-else class="swap-body-container">
-      <div class="input-group">
-        <input
-          id="contractAddress"
-          v-model="contractAddress"
-          type="text"
-          placeholder="Enter Contract Address"
-        />
-      </div>
-      <div class="sol-input">
-        <span class="label-sol">
-          <img src="../../public/images/solana-logo.svg" alt="" />
-          SOL</span
+      <div class="input-group d-flex col-md-12 justify-content-between">
+        <select
+          v-model="sellContractAddress"
+          class="contractAddresses col-md-11"
         >
-        <div class="amount-container">
+          <option value="" disabled selected>Select Contract Address</option>
+          <option
+            v-for="address in purchasedContractAddressesList"
+            :key="address"
+            :value="address"
+          >
+            {{ address }}
+          </option>
+        </select>
+        <div class="col-md-1 clear-icon-container" @click="clearSellContract">
+          <img src="../../public/images/clear.svg" alt="" class="clear-icon" />
+        </div>
+      </div>
+      <div class="percentage-container col-12 mb-3 justify-content-between">
+        <div v-for="amount in amounts" :key="amount" class="col-3 gx-2">
+          <div
+            class="fixed-amounts"
+            :class="{ active: selectedAmount === amount }"
+            @click="selectAmount(amount)"
+          >
+            {{ amount }}%
+          </div>
+        </div>
+      </div>
+      <div class="d-flex sell-amount-container mb-3">
+        <span class="or-placeholder">or</span>
+        <div
+          class="sell-amount-dropdown"
+          @click="selectAmount('custom')"
+          :class="{ active: selectedAmount === 'custom' }"
+        >
+          <select v-model="selectedSellType" @change="handleDropdownChange">
+            <option value="sol">SOL</option>
+            <option value="%">%</option>
+          </select>
+        </div>
+        <div
+          class="sell-amount-input"
+          @click="selectAmount('custom')"
+          :class="{ active: selectedAmount === 'custom' }"
+        >
           <input
             id="solAmount"
-            v-model="solAmount"
+            v-model="solSellAmount"
             type="text"
-            placeholder="0.00"
-            @input="convertToUSD"
+            :placeholder="
+              selectedSellType === 'sol'
+                ? 'Amount to sell in SOL'
+                : 'Percentage to sell'
+            "
           />
-          <div class="usd-display">≈ ${{ usdAmount.toFixed(2) }} USD</div>
-        </div>
-        <div class="max-info" @click="applyMax">
-          <div class="max-sol">Max. {{ maxSol }} SOL</div>
-          <div class="max-usd">≈ ${{ maxUsd.toFixed(2) }} USD</div>
         </div>
       </div>
-      <button @click="buySolana">Buy Coin</button>
+      <button class="action-button" @click="buySolana">Sell Coin</button>
     </div>
   </div>
 </template>
@@ -81,13 +111,23 @@ export default {
   name: "SolanaSwap",
   data() {
     return {
-      activeButton: "buy",
+      activeButton: "sell",
       contractAddress: "",
       rawSolAmount: 0,
       usdAmount: 0.0,
       maxSol: 100,
       maxUsd: 1000,
       solToUsdRate: 10.0,
+      selectedSellType: "sol",
+      selectedAmount: null,
+      solSellAmount: "",
+      amounts: [25, 50, 100],
+      sellContractAddress: "",
+      purchasedContractAddressesList: [
+        "0x1234567890",
+        "0x0987654321",
+        "0x1357924680",
+      ],
     };
   },
   computed: {
@@ -117,14 +157,32 @@ export default {
       this.convertToUSD();
     },
     buySolana() {
-      console.log(
-        `Buying ${this.rawSolAmount} SOL at contract ${this.contractAddress}`
-      );
       this.$emit("buy-solana", {
         amount: this.rawSolAmount,
         contract: this.contractAddress,
       });
       // API integration here
+    },
+    selectAmount(amount) {
+      this.selectedAmount = amount;
+      if (amount !== "custom") {
+        this.selectedSellType = "%";
+        this.solSellAmount = amount.toString();
+      } else {
+        this.clearInput();
+      }
+    },
+    handleDropdownChange() {
+      if (this.selectedSellType === "sol") {
+        this.clearInput();
+      }
+    },
+    clearSellContract() {
+      this.sellContractAddress = "";
+    },
+    clearInput() {
+      this.solSellAmount = "";
+      this.selectedAmount = null;
     },
   },
 };
@@ -135,7 +193,6 @@ export default {
   background-color: #1e1e2f;
   color: white;
   border-radius: 8px;
-  width: fit-content;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -216,7 +273,7 @@ export default {
   right: 0;
 }
 
-button {
+.action-button {
   background-color: #0d98ba;
   border: none;
   padding: 10px 20px;
@@ -243,6 +300,7 @@ button:hover {
 }
 
 .action-buttons button {
+  padding: 10px 20px;
   flex: 1;
   display: flex;
   align-items: center;
@@ -254,6 +312,7 @@ button:hover {
   border-radius: 8px 8px 0 0;
   border: 1px solid transparent;
   background: none;
+  width: 100%;
 }
 
 .button-container {
@@ -269,5 +328,121 @@ button:hover {
   border-radius: 8px 8px 0 0;
   background: linear-gradient(180deg, #31333f 0%, #191a22 100%);
   border-color: rgba(255, 255, 255, 0.03);
+}
+
+.fixed-amounts {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: 0 0;
+  color: rgba(255, 255, 255, 0.95);
+  padding: 12px 16px;
+  align-items: center;
+  display: inline-flex;
+  line-height: 1;
+  font-size: 14px;
+  cursor: pointer;
+  justify-content: flex-start;
+  gap: 6px;
+  width: 100%;
+  font-weight: 500;
+  min-height: 32px;
+  align-items: center;
+  border-radius: 100px;
+}
+
+.fixed-amounts {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fixed-amounts.active {
+  background-color: #0d98ba;
+  background: rgba(106, 96, 232, 0.1);
+  border-color: #6a60e8;
+  color: #8e9dff;
+}
+
+.percentage-container {
+  display: flex;
+}
+
+.sell-amount-dropdown {
+  background: none;
+  border: 1px solid #666;
+  border-radius: 100px 0px 0px 100px;
+  display: flex;
+}
+
+.sell-amount-dropdown select {
+  background-color: transparent;
+  border: none;
+  color: #8d93b7;
+  padding-left: 10px;
+  padding-right: 5px;
+  font-size: 13px;
+}
+
+.sell-amount-dropdown.active,
+.sell-amount-input.active {
+  color: #8e9dff;
+  background: rgba(106, 96, 232, 0.1);
+  border-color: #6a60e8;
+}
+
+.or-placeholder {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 15px;
+  color: #8d93b7;
+}
+
+.sell-amount-dropdown select:focus,
+.sell-amount-dropdown select:hover {
+  outline: none;
+  border: none;
+}
+
+.sell-amount-input {
+  background: none;
+  border: 1px solid #666;
+  border-radius: 0px 100px 100px 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.sell-amount-input input::placeholder {
+  font-size: 14px;
+}
+
+.contractAddresses {
+  background: none;
+  border: 1px solid #666;
+  border-radius: 5px;
+  padding: 10px;
+  color: #666;
+}
+
+.contractAddresses:focus {
+  outline: none;
+}
+
+.reset-select {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-icon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.clear-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
 }
 </style>
